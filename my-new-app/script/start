@@ -1,0 +1,19 @@
+#!/bin/bash
+
+mode=$1
+
+if [[ $mode = "electron" ]]; then
+    npx electron-forge start
+    exit
+fi
+
+if [[ $mode = "node" ]]; then
+    # npx webpack --config ./config/backend/webpack.main.config.ts
+    cti create ./src/backend
+    node -i -e "const main = require('./script/repl')"
+    rm -r ./dist
+    cti clean ./src/backend
+    exit
+fi
+
+echo "mode not specified"

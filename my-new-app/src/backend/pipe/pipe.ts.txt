@@ -1,0 +1,30 @@
+import _ from 'lodash';
+import * as _src from '../pipe/src';
+import { objectRecursive } from '../tools';
+
+type t_src = { [k: string]: Function | { [k: string]: any} };
+
+// export const c_pipe = (obj: object): { [k: string]: any } => {
+export const c_pipe = (obj: object) => {
+
+    const This: {
+        view: object,
+        pill: object[],
+        pipe: t_src
+    } = {
+        view: {},
+        pill: [],
+        pipe: { ..._src }
+    }
+
+    _.forIn({ ...This.pipe }, (value: Function, key: string) => {
+        const newKey = key.split('_')[1];
+        This.pipe[newKey] = value(This);
+        delete This.pipe[key];
+    })
+
+    return {
+        deb: () => This,
+        ...objectRecursive(obj, [This.pipe.transform]),
+    }
+}

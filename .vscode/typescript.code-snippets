@@ -1,0 +1,75 @@
+{
+	// Place your poc workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and 
+	// description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope 
+	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is 
+	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are: 
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
+	// Placeholders with the same ids are connected.
+	// Example:
+	// "Print to console": {
+	// 	"scope": "javascript,typescript",
+	// 	"prefix": "log",
+	// 	"body": [
+	// 		"console.log('$1');",
+	// 		"$2"
+	// 	],
+	// 	"description": "Log output to console"
+	// }
+
+	"constructor function": {
+		"scope": "javascript,typescript",
+		"prefix": "_crf",
+		"body": [
+			"export const ${1:module} =  (${2:/*defaults*/}) => {",
+			"    const This = {",
+			"        ${3:/*object this*/}",
+			"    }",
+			"",
+			"${4:/*code to constructor...*/}",
+			"",
+			"    return () => {",
+			"        $0",
+			"    }",
+			"}"
+		],
+		"description": "create constructor with function return"
+	},
+
+	"constructor object": {
+		"scope": "javascript,typescript",
+		"prefix": "_cro",
+		"body": [
+			"export const ${1:module} =  (${2:/*defaults*/})=>{",
+			"    const This = {",
+			"        ${3:/*object this*/}",
+			"    }",
+			"",
+			"${4:/*code to constructor...*/}",
+			"",
+			"    return {",
+			"        deb: () => This",
+			"$0",
+			"    }",
+			"}"
+		],
+		"description": "create constructor with object return"
+	},
+
+	"import all": {
+		"scope": "javascript,typescript",
+		"prefix": "_imp",
+		"body":[
+			"import * as ${1:name} from '$0'"
+		],
+		"description": "import all"
+	},
+
+	"import specific": {
+		"scope": "javascript,typescript",
+		"prefix": "__imp",
+		"body":[
+			"import { ${1:name} } from '$0'"
+		],
+		"description": "import specific"
+	}
+}
