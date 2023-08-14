@@ -6,8 +6,9 @@ import { c_objectRecursive } from './tools'
 // } = c_pipe();
 
 const pipe = c_pipe();
-
 const objectRecursive = c_objectRecursive();
+
+let exp = null;
 
 const test = {
     math: {
@@ -46,6 +47,7 @@ const test = {
     }
 }
 
-objectRecursive(test, [pipe.transform])
+objectRecursive(test, [pipe.transform]);
+exp = pipe.get();
 
-export { pipe }
+export { exp }

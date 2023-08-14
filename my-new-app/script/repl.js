@@ -1,36 +1,47 @@
 const Path = require('path');
 const Webpack = require('webpack');
 const Shell = require('shelljs');
+const Repl = require('node:repl');
+const Fs = require('fs');
+const Conf = require('../config/backend/webpack.main.config');
 
-const conf = require('../config/backend/webpack.main.config');
+const compiler = Webpack(Conf);
 
-const compiler = Webpack(conf);
-const fs = require('fs');
+global.__dirname = Shell.pwd().stdout;
 
-const registerError = (type, content) => {
-    const data = new Date().toISOString();
-    const log = {
-        data, type, content
-    }
-    const logStr = JSON.stringify(log, null, 2);
-
-    fs.appendFile('log.json', logStr, (err) => {
-        if (err) {
-            console.error('Error writing to log file:', err);
-        }
-    });
+const path = {
+    compiler: Path.resolve(__dirname, 'dist/main'),
+    cti: Path.resolve(__dirname, 'src/backend'),
+    dist: Path.resolve(__dirname, 'dist'),
 }
 
-const logStats = (stats) => {
-    console.log(stats.toString({
-        chunks: false,  // disable chunk information
-        colors: true   // enable colorful output
-    }),"\n");
+const log = {
+    register: {
+        error: (type, content) => {
+            const data = new Date().toISOString();
+            const log = {
+                data, type, content
+            }
+            const logStr = JSON.stringify(log, null, 2);
+
+            Fs.appendFile('log.json', logStr, (err) => {
+                if (err) {
+                    console.error('Error while writing to log file:', err);
+                }
+            });
+        }
+    },
+
+    stats: (stats) => {
+        console.log(stats.toString({
+            chunks: false,  // disable chunk information
+            colors: true   // enable colorful output
+        }), "\n");
+    }
 }
 
 const callback = {
     compiler(err, stats) {
-        const path = Path.resolve(__dirname, 'dist/main');
         const info = stats.toJson();
         const statsError =
             stats.hasErrors() ?
@@ -47,24 +58,38 @@ const callback = {
             return;
         }
 
-        logStats(stats);
+        log.stats(stats);
 
         if (statsError) {
-            registerError(statsError, info.errors);
+            log.register.error(statsError, info.errors);
             return
         }
 
         delete require.cache[require.resolve(path)];
-        Object.assign(main, require(path))
-    }
+        callback.repl.start();
+        Object.assign(global, require(path));
+    },
+
+    repl:{
+        start() {
+            Shell.exec('cti create ' + path.cti);
+        },
+
+        exit() {
+            Shell.rm(path.dist);
+            Shell.exec('cti clean ' + path.cti)
+        }    
+    },
 };
 
-const main = {
-    refresh() {
-        compiler.run(callback.compiler)
-    }
+const repl = {
+    server: Repl.start(),
 }
 
-__dirname = Shell.pwd().stdout;
+callback.repl.start();
 
-module.exports = main;
+repl.server.context.refresh = () => {
+    compiler.run(callback.compiler)
+};
+
+repl.server.on('exit', callback.repl.exit());

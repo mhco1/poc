@@ -25,7 +25,7 @@
 			"        ${3:/*object this*/}",
 			"    }",
 			"",
-			"${4:/*code to constructor...*/}",
+			"    ${4:/*code to constructor...*/}",
 			"",
 			"    return () => {",
 			"        $0",
@@ -44,7 +44,7 @@
 			"        ${3:/*object this*/}",
 			"    }",
 			"",
-			"${4:/*code to constructor...*/}",
+			"    ${4:/*code to constructor...*/}",
 			"",
 			"    return {",
 			"        deb: () => This",
@@ -71,5 +71,22 @@
 			"import { ${1:name} } from '$0'"
 		],
 		"description": "import specific"
+	},
+
+	"pipe": {
+		"scope": "javascript,typescript",
+		"prefix": "_pipe",
+		"body":[
+			"export const _pipe = {",
+			"    name: \"${1:name}\",",
+			"    path: \"${2:path}\",",
+			"    isEnd: ${3:false},",
+			"    /*context: ${4:undefined},*/",
+			"    fn: (${5:context}) => (${6:/*arguments*/}) => {",
+			"        ${0:/*code...*/}",
+			"    }",
+			"}"
+		],
+		"description": "generate pipe export"
 	}
 }

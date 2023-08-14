@@ -1,9 +1,10 @@
 type t_lib = { [k: string]: Function };
+type t_pill = { name: string, fn: Function, arg: [] }[];
 
 export const c_add = ({
-    view, pill, pipe
+    context, setContext, view, pill, pipe
 }: {
-    view: object, pill: object[], pipe: t_lib
+    context: object, setContext: Function , view: object, pill: t_pill, pipe: t_lib,
 }) => {
 
     /*code to constructor...*/

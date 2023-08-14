@@ -9,10 +9,11 @@ fi
 
 if [[ $mode = "node" ]]; then
     # npx webpack --config ./config/backend/webpack.main.config.ts
-    cti create ./src/backend
-    node -i -e "const main = require('./script/repl')"
-    rm -r ./dist
-    cti clean ./src/backend
+    # cti create ./src/backend
+    # node -i -e "const main = require('./script/repl')"
+    # rm -r ./dist
+    # cti clean ./src/backend
+    node ./script/repl.js
     exit
 fi
 

@@ -24,8 +24,8 @@ export const c_objectRecursive = () => {
             value: {
                 new: (value: any) => This.obj[This.value] = value,
                 get: () => This.obj[This.value],
-                deb: () => This,
-            }
+            },
+            deb: () => This,
         }
     }
 
