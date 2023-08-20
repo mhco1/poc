@@ -1,7 +1,5 @@
 import _ from 'lodash'
 
-type t_callback =  { meet: Function, transform: Function }[]
-
 export const c_objectRecursive = () => {
 
     const c_alias = () => {
@@ -54,7 +52,7 @@ export const c_objectRecursive = () => {
         }
     }
 
-    return (obj: object, callback:t_callback) => {
+    return (obj: object, callback: { meet: Function, transform: Function }[]) => {
         const res = { ...obj };
         const loop = c_loop();
         const alias = c_alias();

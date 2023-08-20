@@ -1,0 +1,7 @@
+{
+    "json": {
+        "path": "database/data.json",
+        "update": true,
+        "default": "{\"col\":{\"nome\":0},\"data\":[{\"active\":true,\"name\":\"name\",\"type\":\"name\",\"index\":0,\"item\":[]}]}"
+    }
+}

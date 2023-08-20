@@ -7,7 +7,7 @@ const Conf = require('../config/backend/webpack.main.config');
 
 const compiler = Webpack(Conf);
 
-global.__dirname = Shell.pwd().stdout;
+__dirname = global.__dirname = Shell.pwd().stdout;
 
 const path = {
     compiler: Path.resolve(__dirname, 'dist/main'),
@@ -40,7 +40,7 @@ const log = {
     }
 }
 
-const callback = {
+const middleware = {
     compiler(err, stats) {
         const info = stats.toJson();
         const statsError =
@@ -49,6 +49,7 @@ const callback = {
                 stats.hasWarnings() ?
                     'warning' :
                     false;
+        let module = null;
 
         if (err) {
             console.error(err.stack || err);
@@ -65,20 +66,22 @@ const callback = {
             return
         }
 
-        delete require.cache[require.resolve(path)];
-        callback.repl.start();
-        Object.assign(global, require(path));
+        delete require.cache[require.resolve(path.compiler)];
+
+        module = require(path.compiler);
+        Object.assign(repl.server.context, module);
     },
 
-    repl:{
-        start() {
-            Shell.exec('cti create ' + path.cti);
-        },
+    refresh() {
+        Shell.exec('cti clean ' + path.cti);
+        Shell.exec('cti create ' + path.cti);
+    },
 
+    repl: {
         exit() {
-            Shell.rm(path.dist);
-            Shell.exec('cti clean ' + path.cti)
-        }    
+            Shell.rm('-r', path.dist);
+            Shell.exec('cti clean ' + path.cti);
+        }
     },
 };
 
@@ -86,10 +89,10 @@ const repl = {
     server: Repl.start(),
 }
 
-callback.repl.start();
-
+repl.server.context.code = null;
 repl.server.context.refresh = () => {
-    compiler.run(callback.compiler)
+    middleware.refresh();
+    compiler.run(middleware.compiler)
 };
 
-repl.server.on('exit', callback.repl.exit());
+repl.server.on('exit', middleware.repl.exit);
