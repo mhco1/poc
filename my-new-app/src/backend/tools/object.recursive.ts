@@ -1,74 +1,80 @@
-type t_callback = { meet: Function, transform: Function }[]
+type t_callback = { meet: Function, transform: Function }
+type t_Object = { [key: string]: any };
+type t_path = [string[], any];
 
-export const c_objectRecursive = () => {
+export const c_objectRecursive = (/*defaults*/) => {
+    const This = {
+        /*object this*/
+    }
 
-    const isObject = (o: any) => (typeof o === 'object' && !Array.isArray(o))
+    const res: any = <t_o extends t_Object>(obj: t_o, callback: t_callback[]) => {
+        const paths: t_path[] = fn.convert.toPath(obj, callback);
+        return fn.convert.toObject(paths);
+    }
 
-    const c_alias = (obj: { [key: string]: any }) => {
-        const This: {
-            res: object,
-            obj: any,
-            value: string
-        } = {
-            res: structuredClone(obj),
-            obj: {},
-            value: "",
-        };
+    const fn: t_Object = res.fn = {};
+    res.deb = This;
 
-        return {
-            deep: (deepPath: string[]) => {
-                const arr = [...deepPath];
-                This.obj = This.res;
-                This.value = arr.pop();
-                arr.forEach(el => This.obj = This.obj[el]);
-            },
-            value: {
-                new: (value: any) => This.obj[This.value] = value,
-                get: () => This.obj[This.value],
-            },
-            res: () => This.res,
-            deb: () => This,
+    // code to constructor
+
+    fn.callback = <t_v, t_c extends t_callback>(value: t_v, callback: t_c[]) => {
+        let el: t_callback;
+        while (el = callback.shift()) {
+            const { meet, transform } = el;
+            if (!!meet(value)) {
+                const _value = transform(value);
+                if (typeof _value !== 'undefined') return [true, _value]
+                return [true, value]
+            }
+        }
+
+        return [false, value]
+    };
+
+    fn.convert = {
+        toPath<t_o extends t_Object>(obj: t_o, callback: t_callback[]) {
+            const arrObj: [string[], t_Object][] = [[[], obj]];
+            const paths: [string[], t_Object][] = [];
+
+            let el;
+            while (el = arrObj.shift()) {
+                const [past, _obj] = el;
+                Object.keys(_obj).forEach(key => {
+                    const [isMeet, value] = fn.callback(_obj[key], [...callback]);
+                    const path: [string[], t_Object] = [[...past, key], value];
+
+                    if (isMeet) {
+                        paths.push(path);
+                    } else {
+                        arrObj.push(path);
+                    }
+                })
+            }
+
+            return paths;
+        },
+
+        toObject<t_p extends t_path>(paths: t_p[]) {
+            const res: t_Object = {};
+            let el;
+            while (el = paths.shift()) {
+                const [path, value] = el;
+                const last = path.pop();
+                let ref = res;
+                let key;
+                while (key = path.shift()) {
+                    if (typeof ref[key] === 'undefined') {
+                        ref[key] = {};
+                    }
+
+                    ref = ref[key];
+                }
+                ref[last] = value;
+            }
+
+            return res
         }
     }
 
-    const c_loop = (obj: object) => {
-        const convert = (o: object, df: string[]) =>
-            Object.keys(o).map(el => [...df, el]);
-
-        const This: {
-            current: string[],
-            arr: string[][],
-        } = {
-            arr: convert(obj, []),
-            current: [],
-        };
-
-        return {
-            add: (obj: object) => This.arr.push(...convert(obj, This.current)),
-            next: () => typeof (This.current = This.arr.shift()) !== 'undefined',
-            get: () => This.current,
-            deb: () => This,
-        }
-    }
-
-    return (obj: object, callback: t_callback) => {
-        const loop = c_loop(obj);
-        const alias = c_alias(obj);
-
-        while (loop.next()) {
-            alias.deep(loop.get());
-            const value = alias.value.get();
-
-            callback.forEach(el => {
-                const { meet, transform } = el;
-
-                if (meet(value)) {
-                    const newValue = transform(value);
-                    typeof newValue !== 'undefined' && alias.value.new(newValue);
-                } else if (isObject(value)) loop.add(value);
-            })
-        }
-
-        return alias.res()
-    }
+    return res
 }
