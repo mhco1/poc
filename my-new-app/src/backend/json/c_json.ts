@@ -1,10 +1,8 @@
 import * as src from './src'
-import { c_objectRecursive } from '@tools/object.recursive'
-import conf from '@backend/conf.json'
+import { c_objectRecursive } from 'tools/object.recursive'
+import conf from '~/conf.json'
 
 export const c_json = (/*defaults*/) => {
-    debugger
-
     const This = {
         ...conf.json
     }
@@ -13,14 +11,14 @@ export const c_json = (/*defaults*/) => {
 
     const callback = {
         insertContext: {
-            meet: (value: any) => typeof value === 'function',
-            transform: (value: any) => value(This),
+            meet: (value: any) => typeof value.default !== 'undefined',
+            transform: (value: any) => value.default(This),
         }
     }
 
-    const res = objectRecursive(src, [callback.insertContext]);
-
     debugger
+
+    const res = objectRecursive(src, [callback.insertContext]);
 
     return {
         deb: () => This,

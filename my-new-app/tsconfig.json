@@ -11,11 +11,12 @@
     "outDir": "dist",
     "moduleResolution": "node",
     "resolveJsonModule": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
     "paths": {
-      "*": ["node_modules/*"],
-      "@src/*": ["./src/*"],
-      "@backend/*": ["./src/backend/*"],
-      "@tools/*": ["./src/backend/tools/*"],
+      "*": ["./node_modules/*"],
+      "~/*": ["./src/backend/*"],
+      "tools/*": ["./src/backend/tools/*"],
     }
   },
   "include": ["src/**/*"]

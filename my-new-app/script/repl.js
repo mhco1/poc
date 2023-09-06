@@ -73,14 +73,14 @@ const middleware = {
     },
 
     refresh() {
-        Shell.exec('cti clean ' + path.cti);
-        Shell.exec('cti create ' + path.cti);
+        // Shell.exec('cti clean ' + path.cti);
+        // Shell.exec('cti create ' + path.cti);
     },
 
     repl: {
         exit() {
             Shell.rm('-r', path.dist);
-            Shell.exec('cti clean ' + path.cti);
+            // Shell.exec('cti clean ' + path.cti);
         }
     },
 };

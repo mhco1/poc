@@ -15,68 +15,76 @@
 	// 	],
 	// 	"description": "Log output to console"
 	// }
-
 	"constructor function": {
 		"scope": "javascript,typescript",
 		"prefix": "_crf",
 		"body": [
 			"export const ${1:module} =  (${2:/*defaults*/}) => {",
 			"    const This = {",
-			"        ${3:/*object this*/}",
+			"        ${3:// object this}",
 			"    }",
 			"",
-			"    ${4:/*code to constructor...*/}",
+			"    const res = () => {",
 			"",
-			"    return () => {",
-			"        $0",
+			"        ${0:// code to execution}",
+			"",
 			"    }",
+			"",
+			"    const fn = res.fn = {};",
+			"    res.deb = This;",
+			"",
+			"    ${4:// code to constructor}",
+			"",
+			"    return res",
 			"}"
 		],
 		"description": "create constructor with function return"
 	},
-
 	"constructor object": {
 		"scope": "javascript,typescript",
 		"prefix": "_cro",
 		"body": [
-			"export const ${1:module} =  (${2:/*defaults*/})=>{",
+			"export const ${1:module} =  (${2:/*defaults*/}) => {",
 			"    const This = {",
-			"        ${3:/*object this*/}",
+			"        ${3:// object this}",
 			"    }",
 			"",
-			"    ${4:/*code to constructor...*/}",
+			"    const res = () => ({",
 			"",
-			"    return {",
-			"        deb: () => This",
-			"$0",
-			"    }",
+			"        ${0:// code to execution}",
+			"",
+			"    })",
+			"",
+			"    const fn = res.fn = {};",
+			"    res.deb = This;",
+			"",
+			"    ${4:// code to constructor}",
+			"",
+			"    return res",
 			"}"
 		],
 		"description": "create constructor with object return"
 	},
-
 	"import all": {
 		"scope": "javascript,typescript",
 		"prefix": "_imp",
-		"body":[
+		"body": [
 			"import * as ${1:name} from '$0'"
 		],
 		"description": "import all"
 	},
-
 	"import specific": {
 		"scope": "javascript,typescript",
 		"prefix": "__imp",
-		"body":[
+		"body": [
 			"import { ${1:name} } from '$0'"
 		],
 		"description": "import specific"
 	},
-
 	"pipe": {
 		"scope": "javascript,typescript",
 		"prefix": "_pipe",
-		"body":[
+		"body": [
 			"export const _pipe = {",
 			"    name: \"${1:name}\",",
 			"    path: \"${2:path}\",",

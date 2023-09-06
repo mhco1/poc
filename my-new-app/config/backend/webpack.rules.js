@@ -1,3 +1,5 @@
+// const Path = require('path');
+
 module.exports = [
     // Add support for native node modules
     {
@@ -30,18 +32,8 @@ module.exports = [
         test: /\.(?:m?js|cjs|tsx?)$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
-          options: {
-            presets: [
-            //   ['@babel/preset-env', { targets: "defaults" }],
-              ["@babel/preset-typescript"],
-            ],
-            plugins: [
-                // ['wildcard', {
-                //     'useCamelCase': true
-                // }]
-            ]
-          }
+            loader: 'babel-loader',
+            // options: 
         }
     },
     {

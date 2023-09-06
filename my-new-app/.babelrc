@@ -1,0 +1,32 @@
+{
+    "presets": [
+        [ "@babel/preset-typescript" ],
+        [ "@babel/preset-env" ]
+    ],
+    "plugins": [
+        // ['wildcard', {
+        //     'useCamelCase': true
+        // }]
+        // ["babel-plugin-root-import", {
+        //     root: Path.resolve(__dirname, '../../src/backend'),
+        //     paths: [
+        //         // {
+        //         //     rootPathPrefix: "",
+        //         //     rootPathSuffix: "",
+        //         // }
+        //     ]
+        // }]
+        [
+            "module-resolver",
+            {
+                "root": [
+                    "./src/backend"
+                ],
+                "alias": {
+                    "~": "./src/backend",
+                    "tools": "./src/backend/tools"
+                }
+            }
+        ]
+    ]
+}

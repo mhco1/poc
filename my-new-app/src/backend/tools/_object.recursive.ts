@@ -1,49 +1,52 @@
-type t_callback = { meet: Function, transform: Function }[]
+import _ from 'lodash'
+
+type t_callback =  { meet: Function, transform: Function }[]
 
 export const c_objectRecursive = () => {
 
-    const isObject = (o: any) => (typeof o === 'object' && !Array.isArray(o))
-
-    const c_alias = (obj: { [key: string]: any }) => {
+    const c_alias = () => {
         const This: {
-            res: object,
+            save: object,
             obj: any,
             value: string
         } = {
-            res: structuredClone(obj),
             obj: {},
             value: "",
+            save: {}
         };
 
         return {
+            ini: (obj: object) => This.save = obj,
             deep: (deepPath: string[]) => {
                 const arr = [...deepPath];
-                This.obj = This.res;
+                This.obj = This.save;
                 This.value = arr.pop();
-                arr.forEach(el => This.obj = This.obj[el]);
+                arr.map(el => This.obj = This.obj[el]);
             },
             value: {
                 new: (value: any) => This.obj[This.value] = value,
                 get: () => This.obj[This.value],
             },
-            res: () => This.res,
             deb: () => This,
         }
     }
 
-    const c_loop = (obj: object) => {
-        const convert = (o: object, df: string[]) =>
-            Object.keys(o).map(el => [...df, el]);
-
+    const c_loop = () => {
         const This: {
             current: string[],
             arr: string[][],
         } = {
-            arr: convert(obj, []),
+            arr: [],
             current: [],
         };
 
+        const convert = (o: object, df: string[]) =>
+            Object.keys(o).map(el => [...df, el]);
+
         return {
+            ini: (obj: object) => {
+                This.arr = convert(obj, []);
+            },
             add: (obj: object) => This.arr.push(...convert(obj, This.current)),
             next: () => typeof (This.current = This.arr.shift()) !== 'undefined',
             get: () => This.current,
@@ -51,9 +54,12 @@ export const c_objectRecursive = () => {
         }
     }
 
-    return (obj: object, callback: t_callback) => {
-        const loop = c_loop(obj);
-        const alias = c_alias(obj);
+    return (obj: object, callback:t_callback) => {
+        const res = { ...obj };
+        const loop = c_loop();
+        const alias = c_alias();
+        loop.ini(res);
+        alias.ini(res);
 
         while (loop.next()) {
             alias.deep(loop.get());
@@ -65,10 +71,10 @@ export const c_objectRecursive = () => {
                 if (meet(value)) {
                     const newValue = transform(value);
                     typeof newValue !== 'undefined' && alias.value.new(newValue);
-                } else if (isObject(value)) loop.add(value);
+                } else if (_.isPlainObject(value)) loop.add(value);
             })
         }
 
-        return alias.res()
+        return res
     }
 }
