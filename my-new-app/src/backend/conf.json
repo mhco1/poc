@@ -1,6 +1,9 @@
 {
     "json": {
-        "path": "database/data.json",
+        "path": {
+            "root": "/mnt/home/x/pastas/projects/poc/my-new-app",
+            "database": "database/data.json"
+        },
         "update": false,
         "default": "{\"col\":{\"nome\":0},\"data\":[{\"active\":true,\"name\":\"name\",\"type\":\"name\",\"index\":0,\"item\":[]}]}"
     }

@@ -1,6 +1,6 @@
 import { c_json } from '~/json/c_json'
 
-const json = c_json()();
+const json = c_json();
 
 export { json }
 

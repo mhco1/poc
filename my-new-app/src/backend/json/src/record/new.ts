@@ -1,27 +1,28 @@
 type t_data = any[];
-type t_col = { item: { value: any }[], type: string };
+// type t_col = { item: { value: any }[], type: string };
 
 export default (c: any) => (...arr: []) => {
-    // if (!Array.isArray(arr))
-    //     throw Error("The arguments need to be a array")
-
-    arr.forEach((data: t_data) => {
-        c.update = true;
-        c.file.data.forEach((col: t_col, idx: number) => {
-            const value = typeof data[idx] !== 'undefined' ? data[idx] : null;
+    c.update = true;
+    let data: t_data;
+    while (data = arr.shift()) {
+        const dataCol = [...c.file.data];
+        let i = 0;
+        let col;
+        while (col = dataCol.shift()) {
+            const value = typeof data[i] !== 'undefined' ? data[i] : null;
             const index = col.item.length;
-            const item = c.file.data[idx].item;
+            const item = c.file.data[i].item;
             const type = col.type;
             const obj = {
                 value, index,
-                ...c.type[type].row
+                ...c.types[type].row
             };
 
             if (type === 'name' && value === null)
                 throw Error('name not defined');
 
             item.push(obj);
-            return
-        });
-    })
+            i++;
+        }
+    }
 }
